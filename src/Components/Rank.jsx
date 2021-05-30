@@ -1,13 +1,14 @@
 import React from 'react';
 import './Rank.css';
 
-const Rank = () => {
+const Rank = ({name, entries}) => {
+
 	return (
 		<div>
 			<div className='white f3 rank'>
-				{'Twisam your current rank is ....'}
+				{`${name} your current rank is ....`}
 			</div>
-			<div className='f1 white rank '>{'#5'}</div>
+			<div className='f1 white rank '>{entries}</div>
 		</div>
 	);
 };

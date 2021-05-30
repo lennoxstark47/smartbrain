@@ -39,7 +39,7 @@ class App extends Component {
 				id: '',
 				name: '',
 				email: '',
-
+				// password:'',
 				entries: 0,
 				joined: '',
 			},
@@ -57,8 +57,9 @@ class App extends Component {
 				id: data.id,
 				name: data.name,
 				email: data.email,
+				// password: data.password,
 				entries: data.entries,
-				joined: data.entries,
+				joined: data.joined,
 			},
 		});
 	};
@@ -104,9 +105,21 @@ class App extends Component {
 				this.state.input
 			)
 			.then((response) =>
-				this.displayFaceBox(
+				{ if (response) {
+					fetch('http://localhost:3001/image',{
+						method :'put',
+						headers:{'Content-Type':'application/json'},
+						body : JSON.stringify({
+							id: this.state.user.id
+						})
+					}).then(response => response.json())
+					.then(count => {
+						this.setState(Object.assign(this.state.user,{entries:count}))
+					})
+				}
+					this.displayFaceBox(
 					this.calculateFaceLocation(response)
-				)
+				)}
 			)
 			.catch((err) => console.log(err));
 	};
@@ -137,7 +150,10 @@ class App extends Component {
 						<Logo />
 
 						<div style={{ marginTop: '-90px' }}>
-							<Rank />
+							<Rank 
+								name={this.state.user.name}
+								entries={this.state.user.entries}
+							/>
 							<ImageLinkForm
 								handleInput={this.handleInput}
 								handleDetect={this.handleDetect}
@@ -150,7 +166,9 @@ class App extends Component {
 						</div>
 					</div>
 				) : this.state.route === 'signin' ? (
-					<Signin onRouteChange={this.onRouteChange} />
+					<Signin 
+					loadUser={this.loadUser}
+					onRouteChange={this.onRouteChange} />
 				) : (
 					<Register
 						loadUser={this.loadUser}
